@@ -30,4 +30,27 @@ function paginateItem(pageNumber) {
         });
 }
 
-paginateItem(2);
+function getItemsAfterDate(daysAgo) {
+    knexInstance
+        .select('id', 'name', 'price', 'category')
+        .where('date_added',
+            '>',
+            knexInstance.raw(`now() - '?? days'::INTERVAL`, daysAgo)
+        )
+        .from('shopping_list')
+        .then(results => {
+            console.log(results);
+        });
+}
+
+function costPerCategory() {
+    knexInstance
+        .select('category')
+        .sum('price as total')
+        .from('shopping_list')
+        .groupBy('category')
+        .then(result => {
+            console.log(result);
+        });
+}
+costPerCategory();
